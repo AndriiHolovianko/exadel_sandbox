@@ -4,6 +4,7 @@
 /build/www/**
 /src/test/javascript/coverage/
 /src/test/javascript/PhantomJS*/
+HELP.md
 
 ######################
 # Node
@@ -134,6 +135,9 @@ Desktop.ini
 # Maven Wrapper
 ######################
 !.mvn/wrapper/maven-wrapper.jar
+.mvn
+mvnw.cmd
+mvnw
 
 ######################
 # ESLint
