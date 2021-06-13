@@ -1,10 +1,13 @@
 package com.exadel.sandbox.model.location;
 
 import com.exadel.sandbox.model.BaseEntity;
+import com.exadel.sandbox.model.vendorinfo.VendorLocation;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "location")
@@ -34,4 +37,6 @@ public class Location extends BaseEntity {
     @JsonIgnore
     private City city;
 
+    @OneToMany(mappedBy = "location")
+    private Set<VendorLocation> vendorLocations = new HashSet<>();
 }

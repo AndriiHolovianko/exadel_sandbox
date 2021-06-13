@@ -37,4 +37,7 @@ public class Vendor extends BaseEntity {
     @JsonIgnore
     private Set<Product> products = new HashSet<>();
 
+    @OneToMany(mappedBy = "vendor")
+    private Set<VendorLocation> vendorLocations = new HashSet<>();
+
 }
