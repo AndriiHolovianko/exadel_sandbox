@@ -1,6 +1,8 @@
 package com.exadel.sandbox.service.impl;
 
 import com.exadel.sandbox.dto.request.UserDto;
+import com.exadel.sandbox.exceptions.EntityNotFoundException;
+import com.exadel.sandbox.exceptions.messages.ExceptionMessage;
 import com.exadel.sandbox.model.user.User;
 import com.exadel.sandbox.repository.UserRepository;
 import com.exadel.sandbox.service.DetailsUser;
@@ -56,6 +58,16 @@ public class UserSecurityServiceImpl implements UserDetailsService, UserService 
                 .location(user.getLocation())
                 .role(user.getRole())
                 .build();
+    }
+
+    @Override
+    public Long findUserIdByUsername(String username) {
+        return userRepository.findUserIdByUsername(username)
+                .orElseThrow(
+                        () -> new EntityNotFoundException(
+                                String.format("%s%s", ExceptionMessage.USER_ID_BY_USERNAME_NOT_FOUND, username)
+                        )
+                );
     }
 
     @Override

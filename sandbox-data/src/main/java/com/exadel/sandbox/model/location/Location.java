@@ -16,7 +16,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @ToString(exclude = "city")
-@EqualsAndHashCode(callSuper = false,exclude = "city")
+@EqualsAndHashCode(callSuper = false,exclude = {"city", "vendorLocations"})
 public class Location extends BaseEntity {
 
     @NonNull
@@ -38,5 +38,7 @@ public class Location extends BaseEntity {
     private City city;
 
     @OneToMany(mappedBy = "location")
+    @JsonIgnore
     private Set<VendorLocation> vendorLocations = new HashSet<>();
+
 }

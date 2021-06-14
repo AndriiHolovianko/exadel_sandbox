@@ -18,7 +18,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @ToString(exclude = "products")
-@EqualsAndHashCode(callSuper = false, exclude = "products")
+@EqualsAndHashCode(callSuper = false, exclude = {"products", "vendorLocations"})
 public class Vendor extends BaseEntity {
 
     @Column(name = "name")
@@ -38,6 +38,7 @@ public class Vendor extends BaseEntity {
     private Set<Product> products = new HashSet<>();
 
     @OneToMany(mappedBy = "vendor")
+    @JsonIgnore
     private Set<VendorLocation> vendorLocations = new HashSet<>();
 
 }
