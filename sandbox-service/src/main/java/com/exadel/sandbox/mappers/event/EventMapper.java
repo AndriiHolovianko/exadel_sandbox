@@ -69,7 +69,7 @@ public class EventMapper {
                 .dateBegin(event.getDateBegin())
                 .dateEnd(event.getDateEnd())
                 .tags(tagMapper.setTagToSetTagResponse(event.getTags()))
-                .locations(locMapper.setLocationToListLocation(event.getLocations()))
+                .locations(locMapper.setLocationToSetLocationResponse(event.getLocations()))
                 .fullDescription(event.getDescription())
                 .build();
     }

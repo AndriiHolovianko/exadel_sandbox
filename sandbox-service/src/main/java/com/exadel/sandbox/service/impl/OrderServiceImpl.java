@@ -45,10 +45,10 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public String removeEventFromOrder(Long eventId, Long userId) {
-        var exist = userOrderRepository.getOneEventsFromUserOrder(eventId, userId);
-        Optional.ofNullable(exist)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                        "Not Found. EventId: " + eventId + " in User Order"));
+        var exist = eventRepository.getOneEventsFromUserOrder(eventId, userId);
+         if (exist==null)
+                throw  new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Not Found. EventId: " + eventId + " in User Order");
 
         userOrderRepository.deleteFromUserOrder(eventId, userId);
         return "Event successfully removed from User Order ";

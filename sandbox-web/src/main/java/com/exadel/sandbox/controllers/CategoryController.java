@@ -1,5 +1,6 @@
 package com.exadel.sandbox.controllers;
 
+import com.exadel.sandbox.dto.pagelist.PageList;
 import com.exadel.sandbox.dto.request.category.CategoryRequest;
 import com.exadel.sandbox.dto.response.category.CategoryResponse;
 import com.exadel.sandbox.service.CategoryService;
@@ -10,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Set;
 
 @CrossOrigin
 @Slf4j
@@ -40,12 +40,14 @@ public class CategoryController {
     }
 
     @GetMapping(produces = {"application/json"}, path = "categoryname/{name}")
-    public Set<CategoryResponse> getCategoriesByPartOfName(
-            @PathVariable(value = "name", required = false) String categoryName) {
+    public PageList<CategoryResponse> getCategoriesByPartOfName(
+            @PathVariable(value = "name", required = false) String categoryName,
+            @RequestParam(value = "pageNumber", required = false, defaultValue = "0") Integer pageNumber,
+            @RequestParam(value = "pageSize", required = false, defaultValue = "0") Integer pageSize) {
 
         log.debug(">>>>>>>>>>Category List by part of name: " + categoryName);
 
-        return categoryService.listCategoriesByPartOfName(categoryName);
+        return categoryService.listCategoriesByPartOfName(categoryName, pageNumber, pageSize);
     }
 
     @GetMapping(produces = {"application/json"}, path = "category/{categoryId}")
@@ -57,11 +59,13 @@ public class CategoryController {
     }
 
     @GetMapping(produces = {"application/json"}, path = "category")
-    public Set<CategoryResponse> listCategories() {
+    public PageList<CategoryResponse> listCategories(
+            @RequestParam(value = "pageNumber", required = false, defaultValue = "0") Integer pageNumber,
+            @RequestParam(value = "pageSize", required = false, defaultValue = "0") Integer pageSize) {
 
         log.debug(">>>>List all categories");
 
-        return categoryService.listCategories();
+        return categoryService.listCategories(pageNumber, pageSize);
     }
 
     @PostMapping(produces = {"application/json"},
@@ -70,6 +74,4 @@ public class CategoryController {
     public ResponseEntity<CategoryResponse> createCategory(@Valid @RequestBody CategoryRequest categoryRequest) {
         return new ResponseEntity<>(categoryService.saveCategory(categoryRequest), HttpStatus.OK);
     }
-
-
 }

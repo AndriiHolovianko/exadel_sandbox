@@ -1,33 +1,34 @@
 package com.exadel.sandbox.service.impl;
 
 import com.exadel.sandbox.dto.request.location.LocationRequest;
+import com.exadel.sandbox.dto.request.location.VendorLocationRequest;
+import com.exadel.sandbox.dto.request.location.VendorLocationUpdateRequest;
+import com.exadel.sandbox.dto.request.vendor.VendorRequest;
 import com.exadel.sandbox.dto.response.filter.LocationFilterResponse;
 import com.exadel.sandbox.dto.response.location.LocationResponse;
 import com.exadel.sandbox.model.LocationFilter;
 import com.exadel.sandbox.model.location.City;
 import com.exadel.sandbox.model.location.Location;
 import com.exadel.sandbox.repository.location_repository.LocationRepository;
+import com.exadel.sandbox.service.CityService;
 import com.exadel.sandbox.service.LocationService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class LocationServiceImpl implements LocationService {
 
     private final LocationRepository locationRepository;
     private final ModelMapper mapper;
-
-    @Autowired
-    public LocationServiceImpl(LocationRepository locationRepository, ModelMapper mapper) {
-        this.locationRepository = locationRepository;
-        this.mapper = mapper;
-    }
+    private final CityService cityService;
 
     @Override
     public List<Location> findAll() {
@@ -101,8 +102,12 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public List<LocationFilterResponse> findAllLocationFilterFavorites(Long userId) {
-        return groupByCountry(locationRepository.getAllEventsLocationsFromSaved(userId));
+    public Location update(VendorLocationUpdateRequest request) {
+        var locationFromDB = findById(request.getId());
+        var city = cityService.findById(request.getCityId());
+        var location = getLocation(request, city);
+        location.setId(locationFromDB.getId());
+        return locationRepository.save(location);
     }
 
     private List<LocationFilterResponse>groupByCountry(List<LocationFilter> locations){
@@ -156,5 +161,34 @@ public class LocationServiceImpl implements LocationService {
         }
 
         return locationFilterResponse;
+    }
+
+    public Location getLocation(VendorLocationUpdateRequest request, City city) {
+        return Location.builder().latitude(request.getLatitude())
+                .longitude(request.getLongitude())
+                .number(request.getNumber())
+                .street(request.getStreet())
+                .city(city).build();
+    }
+
+    @Override
+    public Location findById(Long id) {
+        return locationRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Not found location by id %d", id)));
+    }
+
+    @Override
+    public Location create(VendorLocationRequest request) {
+        var city = cityService.findById(request.getCityId());
+        var location = getLocation(request, city);
+        return locationRepository.save(location);
+    }
+
+    public Location getLocation(VendorLocationRequest request, City city) {
+        return Location.builder().latitude(request.getLatitude())
+                .longitude(request.getLongitude())
+                .number(request.getNumber())
+                .street(request.getStreet())
+                .city(city).build();
     }
 }

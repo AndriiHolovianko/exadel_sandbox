@@ -5,6 +5,7 @@ import com.exadel.sandbox.dto.response.city.CityResponse;
 import com.exadel.sandbox.model.location.City;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public interface CityService {
@@ -21,4 +22,7 @@ public interface CityService {
 
     CityResponse create(CityRequest cityRequest);
 
+    City findById(Long id);
+
+    String findCityNameByUserId(Long userId);
 }

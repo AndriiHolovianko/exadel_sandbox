@@ -1,5 +1,6 @@
 package com.exadel.sandbox.service.impl;
 
+import com.exadel.sandbox.dto.pagelist.PageList;
 import com.exadel.sandbox.dto.request.category.CategoryRequest;
 import com.exadel.sandbox.dto.response.category.CategoryResponse;
 import com.exadel.sandbox.dto.response.category.CategoryShortResponse;
@@ -14,6 +15,9 @@ import com.exadel.sandbox.service.EventService;
 import com.exadel.sandbox.service.TagService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -89,14 +93,20 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Set<CategoryResponse> listCategoriesByPartOfName(String categoryName) {
+    public PageList<CategoryResponse> listCategoriesByPartOfName(String categoryName, Integer pageNumber, Integer pageSize) {
         log.debug(">>>>>>>>>>>>>ListCategoryByPartOfName ...." + categoryName);
 
         categoryName = categoryName.isEmpty() ? "" : categoryName;
 
-        return categoryRepository.findAllByNameContainingIgnoreCaseOrderByNameAsc(categoryName).stream()
+        pageNumber = getPageNumber(pageNumber);
+        pageSize = getPageSize(pageSize);
+
+        Page<Category> categoryPage = categoryRepository.findAllByNameContainingIgnoreCaseOrderByNameAsc(categoryName,
+                PageRequest.of(pageNumber, pageSize, Sort.by(DEFAULT_FIELD_SORT).ascending()));
+
+        return new PageList<CategoryResponse>(categoryPage.stream()
                 .map(categoryMapper::categoryToCategoryResponse)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList()), categoryPage);
     }
 
     @Override
@@ -114,12 +124,18 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Set<CategoryResponse> listCategories() {
+    public PageList<CategoryResponse> listCategories(Integer pageNumber, Integer pageSize) {
         log.debug(">>>>>>>>>>>>>ListCategory ....");
 
-        return categoryRepository.findAllByOrderByNameAsc().stream()
+        pageNumber = getPageNumber(pageNumber);
+        pageSize = getPageSize(pageSize);
+
+        Page<Category> categoryPage = categoryRepository.findAllByOrderByNameAsc(
+                PageRequest.of(pageNumber, pageSize, Sort.by(DEFAULT_FIELD_SORT).ascending()));
+
+        return new PageList<CategoryResponse>(categoryPage.getContent().stream()
                 .map(categoryMapper::categoryToCategoryResponse)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList()), categoryPage);
 
     }
 
@@ -184,5 +200,13 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository.findAll().stream()
                 .map(categoryMapper::categoryToCategoryFilterResponse)
                 .collect(Collectors.toList());
+    }
+
+    private int getPageNumber(Integer pageNumber) {
+        return pageNumber == null || pageNumber < 0 ? DEFAULT_PAGE_NUMBER : pageNumber;
+    }
+
+    private int getPageSize(Integer pageSize) {
+        return pageSize == null || pageSize < 1 ? DEFAULT_PAGE_SIZE : pageSize;
     }
 }

@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -35,6 +37,18 @@ public class CityServiceImpl implements CityService {
         return mapper.map(cityRepository.save(
                 mapper.map(cityRequest, City.class)),
                 CityResponse.class);
+    }
+
+    @Override
+    public City findById(Long id) {
+        return cityRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Not found city by id %d", id)));
+    }
+
+    @Override
+    public String findCityNameByUserId(Long userId) {
+        return cityRepository.findCityNameByUserId(userId)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("City with userId %d not found", userId)));
     }
 
     @Override

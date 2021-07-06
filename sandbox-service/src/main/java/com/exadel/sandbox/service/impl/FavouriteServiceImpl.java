@@ -82,16 +82,16 @@ public class FavouriteServiceImpl implements FavouriteService {
     @Override
     public String saveEventToSaved(Long userId, Long eventId) {
        if (verifyEventId(eventId, userId) != null)
-                throw new EntityNotFoundException("Event already exist in Favorites");
+            throw new EntityNotFoundException("Event already exist in Favorites");
         userSavedRepository.insertIntoUserSaved(eventId, userId);
         return "Event successful added to User Favorite";
     }
 
     @Override
     public String removeEventFromSaved(Long userId, Long eventId) {
-        Optional.ofNullable(verifyEventId(eventId, userId))
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                        "Not Found. EventId: " + eventId + " in User Favorites"));
+        if (verifyEventId(eventId, userId) == null)
+                throw  new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Not Found. EventId: " + eventId + " in User Favorites");
         userSavedRepository.deleteFromUserSaved(eventId, userId);
         return "Event successfully removed from User Favorites ";
     }

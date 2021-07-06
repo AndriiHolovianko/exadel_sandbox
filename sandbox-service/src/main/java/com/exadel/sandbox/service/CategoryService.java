@@ -1,5 +1,6 @@
 package com.exadel.sandbox.service;
 
+import com.exadel.sandbox.dto.pagelist.PageList;
 import com.exadel.sandbox.dto.request.category.CategoryRequest;
 import com.exadel.sandbox.dto.response.category.CategoryResponse;
 import com.exadel.sandbox.dto.response.category.CategoryShortResponse;
@@ -14,7 +15,7 @@ public interface CategoryService {
 
     CategoryResponse updateCategory(Long categoryId, CategoryRequest categoryRequest);
 
-    Set<CategoryResponse> listCategoriesByPartOfName(String categoryName);
+    PageList<CategoryResponse> listCategoriesByPartOfName(String categoryName, Integer pageNumber, Integer pageSize);
 
     CategoryResponse findCategoryById(Long categoryId);
 
@@ -22,7 +23,7 @@ public interface CategoryService {
 
     boolean isCategoryNameExists(String categoryName);
 
-    Set<CategoryResponse> listCategories();
+    PageList<CategoryResponse> listCategories(Integer pageNumber, Integer pageSize);
 
     List<CategoryShortResponse> findAllCategoriesByVendorId(Long vendorId);
 

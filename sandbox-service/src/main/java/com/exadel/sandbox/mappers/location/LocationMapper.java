@@ -22,7 +22,7 @@ public class LocationMapper {
         return Objects.isNull(location) ? null : mapper.map(location, LocationResponse.class);
     }
 
-    public Set<LocationResponse> setLocationToListLocation(Set<Location> locations) {
+    public Set<LocationResponse> setLocationToSetLocationResponse(Set<Location> locations) {
         if (locations == null || locations.isEmpty()) {
             return Collections.emptySet();
         }

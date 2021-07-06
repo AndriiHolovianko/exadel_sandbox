@@ -33,9 +33,4 @@ public interface UserOrderRepository extends JpaRepository<User, Long> {
             "WHERE uo.id =?1")
     @Transactional
     Page<Event> getAllEventsFromUserOrder(Long userId, PageRequest of);
-
-    @Query(value = "SELECT true FROM user_order uo " +
-            "WHERE event_id=:eventId and user_id =:userId LIMIT 1", nativeQuery = true)
-    @Transactional
-    BigInteger getOneEventsFromUserOrder(@Param("eventId") Long eventId, @Param("userId") Long userId);
 }

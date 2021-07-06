@@ -1,7 +1,9 @@
 package com.exadel.sandbox.service.impl;
 
 import com.exadel.sandbox.dto.pagelist.PageList;
+import com.exadel.sandbox.dto.response.vendor.CustomVendorResponse;
 import com.exadel.sandbox.dto.response.vendor.VendorShortResponse;
+import com.exadel.sandbox.mappers.vendor.CustomVendorMapper;
 import com.exadel.sandbox.mappers.vendor.VendorShortMapper;
 import com.exadel.sandbox.repository.vendor.VendorRepository;
 import com.exadel.sandbox.service.VendorService;
@@ -20,7 +22,7 @@ public class VendorServiceImpl implements VendorService {
 
     private final VendorRepository repository;
     private final VendorShortMapper mapper;
-
+    private final CustomVendorMapper customMapper;
 
     @Override
     public PageList<VendorShortResponse> findAll(Integer pageNumber, Integer pageSize) {
@@ -28,6 +30,15 @@ public class VendorServiceImpl implements VendorService {
                 getPageNumber(pageNumber), getPageSize(pageSize), Sort.by(DEFAULT_FIELD_SORT)
         ));
         return new PageList<>(mapper.listTagToListTagResponse(page.getContent()), page);
+    }
+
+    @Override
+    public PageList<CustomVendorResponse> findAllWithEventsCount(Integer pageNumber, Integer pageSize) {
+        var page = repository.findAllWithEventsCount(PageRequest.of(
+                getPageNumber(pageNumber), getPageSize(pageSize), Sort.by(DEFAULT_FIELD_SORT)
+        ));
+        return new PageList<>(customMapper
+                .listVendorProjectionsToListCustomVendorResponse(page.getContent()), page);
     }
 
     private int getPageNumber(Integer pageNumber) {
