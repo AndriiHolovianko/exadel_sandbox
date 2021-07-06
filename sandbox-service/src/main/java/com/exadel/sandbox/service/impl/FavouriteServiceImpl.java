@@ -100,7 +100,6 @@ public class FavouriteServiceImpl implements FavouriteService {
         if (eventId <= 0) {
             throw new IllegalArgumentException("Id is not correct");
         }
-        System.out.println("---------------" + eventRepository.getOneEventsFromUserSaved(eventId, userId));
         return eventRepository.getOneEventsFromUserSaved(eventId, userId);
     }
 

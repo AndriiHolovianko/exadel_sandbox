@@ -72,20 +72,20 @@ public class LocationRepositoryCustomImpl implements LocationRepositoryCustom {
 
     @Override
     public List<LocationFilter> getAllEventsLocationsFromSaved(Long userId) {
+        String sqlWhere = getWhereCondition(List.of(userId), "user_id");
         return entityManager.createNativeQuery(
-                "SELECT DISTINCT  cn.id as countryId,"+
-                        "cn.name as countryName,"+
-                        "ct.id as cityId,"+
-                        "ct.name as cityName"+
-                        "FROM user_order uo"+
-                        "INNER JOIN event e on uo.event_id = e.id"+
-                        "INNER JOIN event_location el on e.id = el.event_id"+
-                        "INNER JOIN  location l on el.location_id = l.id"+
-                        "INNER JOIN city ct on l.city_id = ct.id"+
-                        "INNER JOIN country cn on ct.country_id = cn.id"+
-                        "WHERE uo.user_id = :userId"+
-                        "ORDER BY cn.name ASC, ct.name ASC"
-        ).getResultList();
+                "SELECT DISTINCT  cn.id as countryId, "+
+                        "cn.name as countryName, "+
+                        "ct.id as cityId, "+
+                        "ct.name as cityName "+
+                        "FROM user_order e "+
+                        "INNER JOIN event a on e.event_id = a.id "+
+                        "INNER JOIN event_location el on a.id = el.event_id "+
+                        "INNER JOIN  location l on el.location_id = l.id "+
+                        "INNER JOIN city ct on l.city_id = ct.id "+
+                        "INNER JOIN country cn on ct.country_id = cn.id "+
+                        sqlWhere + " ORDER BY cn.name ASC, ct.name ASC ", "LocalFilterMapping")
+                .getResultList();
     }
 
     private String getWhereCondition(List<Long> ids, String fieldForWhere) {
