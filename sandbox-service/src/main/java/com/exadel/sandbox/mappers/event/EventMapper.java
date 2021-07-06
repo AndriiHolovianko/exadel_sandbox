@@ -10,6 +10,7 @@ import com.exadel.sandbox.mappers.location.LocationMapper;
 import com.exadel.sandbox.mappers.tag.TagMapper;
 import com.exadel.sandbox.mappers.vendor.VendorShortMapper;
 import com.exadel.sandbox.model.location.Location;
+import com.exadel.sandbox.model.vendorinfo.Category;
 import com.exadel.sandbox.model.vendorinfo.Event;
 import com.exadel.sandbox.model.vendorinfo.Tag;
 import com.exadel.sandbox.model.vendorinfo.Vendor;
@@ -35,25 +36,21 @@ public class EventMapper {
     private final VendorShortMapper vendorShortMapper;
 
     public Event eventRequestToEvent(EventRequest eventRequest, Vendor vendor,
-                                     Set<Location> locations, Set<Tag> tags) {
+                                     Set<Location> locations, Category category, Set<Tag> tags) {
 
         return Event.builder()
-                .name(eventRequest.getName())
                 .description(eventRequest.getDescription())
                 .fullDescription(eventRequest.getFullDescription())
                 .dateBegin(eventRequest.getDateBegin())
                 .dateEnd(eventRequest.getDateEnd())
                 .dateOfCreation(LocalDateTime.now())
-                .discount(eventRequest.getDiscount())
                 .email(eventRequest.getEmail())
                 .isOnline(eventRequest.isOnline())
-                .limitation(eventRequest.getLimitation())
-                .phoneNumber(eventRequest.getPhoneNumber())
-                .totalCount(eventRequest.getTotalCount())
-                .price(eventRequest.getPrice())
                 .locations(locations)
                 .vendor(vendor)
+                .category(category)
                 .tags(tags)
+                .status(eventRequest.getStatus())
                 .build();
     }
 

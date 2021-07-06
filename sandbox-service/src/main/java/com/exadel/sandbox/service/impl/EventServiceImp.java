@@ -10,6 +10,7 @@ import com.exadel.sandbox.model.location.Location;
 import com.exadel.sandbox.model.vendorinfo.Event;
 import com.exadel.sandbox.model.vendorinfo.Status;
 import com.exadel.sandbox.model.vendorinfo.Tag;
+import com.exadel.sandbox.repository.category.CategoryRepository;
 import com.exadel.sandbox.repository.event.EventRepository;
 import com.exadel.sandbox.repository.location_repository.CityRepository;
 import com.exadel.sandbox.repository.location_repository.LocationRepository;
@@ -24,8 +25,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
@@ -39,6 +42,7 @@ public class EventServiceImp implements EventService {
     private final CityRepository cityRepository;
     private final LocationRepository locationRepository;
     private final TagRepository tagRepository;
+    private final CategoryRepository categoryRepository;
     private final VendorRepository vendorRepository;
     private final EventMapper eventMapper;
 
@@ -316,11 +320,21 @@ public class EventServiceImp implements EventService {
             return ResponseEntity.badRequest().build();
         }
 
-        var event = eventMapper.eventRequestToEvent(eventRequest, vendor, locationsById, tagsById);
+        final List<Tag> tags = tagsById.stream()
+                .filter(tag -> !tag.getCategory().getId().equals(eventRequest.getCategoryId()))
+                .collect(Collectors.toList());
+
+
+        if (!tags.isEmpty()) {
+            return ResponseEntity.badRequest().body("Tag's don't agree with the inputted category");
+        }
+
+        final var category = categoryRepository.getById(eventRequest.getCategoryId());
+        var event = eventMapper.eventRequestToEvent(eventRequest, vendor, locationsById, category, tagsById);
 
         event = eventRepository.save(event);
 
-        return ResponseEntity.ok().body(event);
+        return ResponseEntity.ok().body(eventMapper.eventToEventDetailResponse(event));
     }
 
 

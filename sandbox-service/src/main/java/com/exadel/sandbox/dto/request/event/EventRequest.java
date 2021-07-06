@@ -6,10 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -17,9 +15,6 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EventRequest {
-
-    @NotBlank(message = "The 'name' cannot be empty")
-    private String name;
 
     @NotBlank(message = "The 'description' cannot be empty")
     private String description;
@@ -29,18 +24,7 @@ public class EventRequest {
     @Email(message = "email must have right format")
     private String email;
 
-    @Min(1)
-    private int totalCount;
-
     private boolean isOnline;
-
-    private String phoneNumber;
-
-    private int limitation;
-
-    private int discount;
-
-    private BigDecimal price;
 
     private LocalDateTime dateBegin;
 
@@ -55,6 +39,8 @@ public class EventRequest {
 
     @NotNull(message = "The 'status' cannot be empty")
     private Status status;
+
+    private Long vendorId;
 
 
 }

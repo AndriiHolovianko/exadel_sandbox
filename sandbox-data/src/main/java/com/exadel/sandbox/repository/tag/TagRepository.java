@@ -12,4 +12,6 @@ public interface TagRepository extends JpaRepository<Tag, Long>, TagRepositoryCu
             "where (tag.id in (?1))")
     Set<Tag> getTagsById(Set<Long> tagsId);
 
+    Set<Tag> findTagsByCategoryId(Long categoryId);
+
 }

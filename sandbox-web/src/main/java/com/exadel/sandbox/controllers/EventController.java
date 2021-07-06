@@ -2,15 +2,23 @@ package com.exadel.sandbox.controllers;
 
 import com.exadel.sandbox.dto.pagelist.PageList;
 import com.exadel.sandbox.dto.request.EventFilterRequest;
+import com.exadel.sandbox.dto.request.event.EventRequest;
 import com.exadel.sandbox.dto.response.event.CustomEventResponse;
 import com.exadel.sandbox.dto.response.event.EventDetailsResponse;
 import com.exadel.sandbox.dto.response.user.AuthenticationResponse;
 import com.exadel.sandbox.security.utill.JwtUtil;
 import com.exadel.sandbox.service.EventService;
 import lombok.AllArgsConstructor;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @CrossOrigin
 @AllArgsConstructor
@@ -84,25 +92,24 @@ public class EventController {
                 ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
-    /*TODO fixed endpoint*/
-//    @PostMapping(produces = {"application/json"},
-//            consumes = {"application/json"},
-//            path = {"/{vendorId}"})
-//    public ResponseEntity<?> createEvent(@PathVariable("vendorId") Long vendorId,
-//                                         @Valid @RequestBody EventRequest eventRequest,
-//                                         BindingResult bindingResult) {
-//        if (bindingResult.hasErrors()) {
-//
-//            return ResponseEntity.badRequest().body(getErrorMessages(bindingResult));
-//        }
-//        return eventService.saveEvent(vendorId, eventRequest);
-//    }
-//
-//    @NotNull
-//    private List<String> getErrorMessages(BindingResult bindingResult) {
-//        return bindingResult.getAllErrors().
-//                stream()
-//                .map(DefaultMessageSourceResolvable::getDefaultMessage)
-//                .collect(Collectors.toList());
-//    }
+    @PostMapping(produces = {"application/json"},
+            consumes = {"application/json"},
+            path = {"/{vendorId}"})
+    public ResponseEntity<?> createEvent(@PathVariable("vendorId") Long vendorId,
+                                         @Valid @RequestBody EventRequest eventRequest,
+                                         BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+
+            return ResponseEntity.badRequest().body(getErrorMessages(bindingResult));
+        }
+        return eventService.saveEvent(vendorId, eventRequest);
+    }
+
+    @NotNull
+    private List<String> getErrorMessages(BindingResult bindingResult) {
+        return bindingResult.getAllErrors().
+                stream()
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                .collect(Collectors.toList());
+    }
 }
