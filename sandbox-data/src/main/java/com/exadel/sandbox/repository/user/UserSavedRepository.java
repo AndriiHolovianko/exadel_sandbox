@@ -23,11 +23,6 @@ public interface UserSavedRepository extends JpaRepository<User, Long> {
     @Transactional
     void insertIntoUserSaved(@Param("eventId") Long eventId, @Param("userId") Long userId);
 
-    @Query(value = "SELECT true FROM saved_event uo " +
-            "WHERE event_id=:eventId and user_id =:userId LIMIT 1", nativeQuery = true)
-    @Transactional
-    BigInteger getOneEventsFromUserSaved(@Param("eventId") Long eventId, @Param("userId") Long userId);
-
     @Query("SELECT e FROM Event e " +
             " join  e.userSavedEvents uo  " +
             "WHERE uo.id =?1")

@@ -8,6 +8,7 @@ import com.exadel.sandbox.dto.response.vendor.VendorShortResponse;
 import com.exadel.sandbox.mappers.event.EventMapper;
 import com.exadel.sandbox.model.vendorinfo.Event;
 import com.exadel.sandbox.repository.category.CategoryRepository;
+import com.exadel.sandbox.repository.event.EventRepository;
 import com.exadel.sandbox.repository.user.UserSavedRepository;
 import com.exadel.sandbox.repository.vendor.VendorRepository;
 import com.exadel.sandbox.service.FavouriteService;
@@ -39,6 +40,7 @@ public class FavouriteServiceImpl implements FavouriteService {
     private final ModelMapper mapper;
     private final CategoryRepository categoryRepository;
     private final EventMapper eventMapper;
+    private final EventRepository eventRepository;
 
     @Override
     public List<LocationShortResponse> eventsLocationsFromSaved(Long userId) {
@@ -79,8 +81,8 @@ public class FavouriteServiceImpl implements FavouriteService {
 
     @Override
     public String saveEventToSaved(Long userId, Long eventId) {
-        Optional.ofNullable(verifyEventId(eventId, userId))
-                .orElseThrow(() -> new EntityNotFoundException("Event already exist in Favorites"));
+       if (verifyEventId(eventId, userId) != null)
+                throw new EntityNotFoundException("Event already exist in Favorites");
         userSavedRepository.insertIntoUserSaved(eventId, userId);
         return "Event successful added to User Favorite";
     }
@@ -94,11 +96,12 @@ public class FavouriteServiceImpl implements FavouriteService {
         return "Event successfully removed from User Favorites ";
     }
 
-    private BigInteger verifyEventId(Long eventId, Long userId) {
+    private Event verifyEventId(Long eventId, Long userId) {
         if (eventId <= 0) {
             throw new IllegalArgumentException("Id is not correct");
         }
-        return userSavedRepository.getOneEventsFromUserSaved(eventId, userId);
+        System.out.println("---------------" + eventRepository.getOneEventsFromUserSaved(eventId, userId));
+        return eventRepository.getOneEventsFromUserSaved(eventId, userId);
     }
 
     private int getPageNumber(Integer pageNumber) {

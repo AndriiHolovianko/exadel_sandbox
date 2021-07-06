@@ -33,14 +33,4 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
                 "Authorization Failed : " + accessDeniedException.getMessage());
     }
 
-    @ExceptionHandler(value = {Exception.class})
-    public void commence(HttpServletRequest request,
-                         HttpServletResponse response,
-                         Exception exception) throws IOException {
-        //500
-        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                "Internal Server Error : " + exception.getMessage());
-    }
-
-
 }
