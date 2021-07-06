@@ -11,4 +11,5 @@ public interface LocationRepositoryCustom {
     List<LocationFilter> findAllByCategoryFilterIds(List<Long>ids);
     List<LocationFilter> findAllByVendorFilterIds(List<Long> ids);
     List<LocationFilter>getAllLocationFilter();
+    List<LocationFilter> getAllEventsLocationsFromSaved(Long userId);
 }

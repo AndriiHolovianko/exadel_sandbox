@@ -22,11 +22,19 @@ public interface LocationRepository extends JpaRepository<Location, Long>, Locat
             "where (l.id in (?1))")
     Set<Location> getLocationsById(Set<Long> locationsIds);
 
-    /* ToDo: get details from frontent and implement this method properly*/
-//    @Query(value = "SELECT DISTINCT c.id, c.name, c.description FROM category c " +
-//            "JOIN event e on e.category_id=c.id " +
-//            "JOIN saved_event se on se.event_id=e.id " +
-//            "WHERE se.user_id = :userId", nativeQuery = true)
+
+//    @Query(value = "SELECT DISTINCT  cn.id as countryId,"+
+//            "cn.name as countryName,"+
+//            "ct.id as cityId,"+
+//            "ct.name as cityName"+
+//            "FROM user_order uo"+
+//            "INNER JOIN event e on uo.event_id = e.id"+
+//            "INNER JOIN event_location el on e.id = el.event_id"+
+//            "INNER JOIN  location l on el.location_id = l.id"+
+//            "INNER JOIN city ct on l.city_id = ct.id"+
+//            "INNER JOIN country cn on ct.country_id = cn.id"+
+//            "WHERE uo.user_id = :userId"+
+//            "ORDER BY cn.name ASC, ct.name ASC", nativeQuery = true)
 //    List<Location> getAllEventsLocationsFromSaved(Long userId);
 
 }

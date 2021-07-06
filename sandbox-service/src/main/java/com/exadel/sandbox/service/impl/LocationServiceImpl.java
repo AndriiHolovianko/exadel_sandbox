@@ -100,6 +100,11 @@ public class LocationServiceImpl implements LocationService {
         return groupByCountry(locationRepository.getAllLocationFilter());
     }
 
+    @Override
+    public List<LocationFilterResponse> findAllLocationFilterFavorites(Long userId) {
+        return groupByCountry(locationRepository.getAllEventsLocationsFromSaved(userId));
+    }
+
     private List<LocationFilterResponse>groupByCountry(List<LocationFilter> locations){
         List<LocationFilterResponse>filterResponseList=new ArrayList<>();
 

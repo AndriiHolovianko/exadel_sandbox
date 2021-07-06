@@ -70,6 +70,24 @@ public class LocationRepositoryCustomImpl implements LocationRepositoryCustom {
 
     }
 
+    @Override
+    public List<LocationFilter> getAllEventsLocationsFromSaved(Long userId) {
+        return entityManager.createNativeQuery(
+                "SELECT DISTINCT  cn.id as countryId,"+
+                        "cn.name as countryName,"+
+                        "ct.id as cityId,"+
+                        "ct.name as cityName"+
+                        "FROM user_order uo"+
+                        "INNER JOIN event e on uo.event_id = e.id"+
+                        "INNER JOIN event_location el on e.id = el.event_id"+
+                        "INNER JOIN  location l on el.location_id = l.id"+
+                        "INNER JOIN city ct on l.city_id = ct.id"+
+                        "INNER JOIN country cn on ct.country_id = cn.id"+
+                        "WHERE uo.user_id = :userId"+
+                        "ORDER BY cn.name ASC, ct.name ASC"
+        ).getResultList();
+    }
+
     private String getWhereCondition(List<Long> ids, String fieldForWhere) {
 
         if (ids.isEmpty() || ids.size() == 0) {

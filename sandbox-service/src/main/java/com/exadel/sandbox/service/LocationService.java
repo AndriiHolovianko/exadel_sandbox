@@ -25,4 +25,6 @@ public interface LocationService {
     List<LocationFilterResponse> findAllLocationFilterByVendorFilter(List<Long> ids);
 
     List<LocationFilterResponse>findAllLocationFilter();
+
+    public List<LocationFilterResponse> findAllLocationFilterFavorites(Long userId);
 }
