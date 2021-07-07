@@ -94,15 +94,27 @@ public class EventController {
 
     @PostMapping(produces = {"application/json"},
             consumes = {"application/json"},
-            path = {"/{vendorId}"})
-    public ResponseEntity<?> createEvent(@PathVariable("vendorId") Long vendorId,
+            path = {"/newEvent"})
+    public ResponseEntity<?> createEvent(@Valid @RequestBody EventRequest eventRequest,
+                                         BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+
+            return ResponseEntity.badRequest().body(getErrorMessages(bindingResult));
+        }
+        return eventService.createEvent(eventRequest);
+    }
+
+    @PutMapping(produces = {"application/json"},
+            consumes = {"application/json"},
+            path = {"/{eventId}"})
+    public ResponseEntity<?> updateEvent(@PathVariable("eventId") Long eventId,
                                          @Valid @RequestBody EventRequest eventRequest,
                                          BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
 
             return ResponseEntity.badRequest().body(getErrorMessages(bindingResult));
         }
-        return eventService.saveEvent(vendorId, eventRequest);
+        return eventService.updateEvent(eventId, eventRequest);
     }
 
     @NotNull

@@ -7,6 +7,7 @@ import com.exadel.sandbox.dto.response.location.LocationShortResponse;
 import com.exadel.sandbox.dto.response.vendor.VendorShortResponse;
 import com.exadel.sandbox.mappers.event.EventMapper;
 import com.exadel.sandbox.model.vendorinfo.Event;
+import com.exadel.sandbox.repository.UserRepository;
 import com.exadel.sandbox.repository.category.CategoryRepository;
 import com.exadel.sandbox.repository.event.EventRepository;
 import com.exadel.sandbox.repository.user.UserSavedRepository;
@@ -22,9 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.persistence.EntityNotFoundException;
-import java.math.BigInteger;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,6 +40,7 @@ public class FavouriteServiceImpl implements FavouriteService {
     private final CategoryRepository categoryRepository;
     private final EventMapper eventMapper;
     private final EventRepository eventRepository;
+    private final UserRepository userRepository;
 
     @Override
     public List<LocationShortResponse> eventsLocationsFromSaved(Long userId) {
@@ -67,7 +67,9 @@ public class FavouriteServiceImpl implements FavouriteService {
         final Page<Event> allEventFromSaved = userSavedRepository.getAllEventsFromUserSaved(userId,
                 PageRequest.of(getPageNumber(pageNumber),
                         getPageSize(pageSize), Sort.by(Sort.Direction.DESC, "dateEnd")));
-
+        if (cityId==null||cityId==0){
+            cityId = userRepository.getById(userId).getLocation().getCity().getId();
+        }
         if (allEventFromSaved.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,
                     "Not Found. Your Favorite list is empty");

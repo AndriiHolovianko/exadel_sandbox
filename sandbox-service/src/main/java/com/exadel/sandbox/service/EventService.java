@@ -23,5 +23,7 @@ public interface EventService {
 
     boolean deleteEventById(Long eventId);
 
-    ResponseEntity<?> saveEvent(Long vendorId, EventRequest eventRequest);
+    ResponseEntity<?> createEvent(EventRequest eventRequest);
+
+    ResponseEntity<?> updateEvent(Long eventId, EventRequest eventRequest);
 }

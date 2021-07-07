@@ -306,15 +306,29 @@ public class EventServiceImp implements EventService {
     }
 
     @Override
-    public ResponseEntity<?> saveEvent(Long vendorId, EventRequest eventRequest) {
+    public ResponseEntity<?> createEvent(EventRequest eventRequest) {
 
-        if (vendorId == null || vendorId <= 0) {
+        return getResponseEntity(null, eventRequest);
+    }
+
+    @Override
+    public ResponseEntity<?> updateEvent(Long eventId, EventRequest eventRequest) {
+
+        if (eventId == null || eventId <= 0) {
             return ResponseEntity.badRequest().build();
         }
 
+        if (!eventRepository.existsById(eventId)) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        return getResponseEntity(eventId, eventRequest);
+    }
+
+    private ResponseEntity<?> getResponseEntity(Long eventId, EventRequest eventRequest) {
         final Set<Location> locationsById = locationRepository.getLocationsById(eventRequest.getLocationsId());
         final Set<Tag> tagsById = tagRepository.getTagsById(eventRequest.getTagsId());
-        final var vendor = vendorRepository.getById(vendorId);
+        final var vendor = vendorRepository.getById(eventRequest.getVendorId());
 
         if (locationsById.isEmpty() || tagsById.isEmpty() || vendor == null) {
             return ResponseEntity.badRequest().build();
@@ -324,7 +338,6 @@ public class EventServiceImp implements EventService {
                 .filter(tag -> !tag.getCategory().getId().equals(eventRequest.getCategoryId()))
                 .collect(Collectors.toList());
 
-
         if (!tags.isEmpty()) {
             return ResponseEntity.badRequest().body("Tag's don't agree with the inputted category");
         }
@@ -332,11 +345,14 @@ public class EventServiceImp implements EventService {
         final var category = categoryRepository.getById(eventRequest.getCategoryId());
         var event = eventMapper.eventRequestToEvent(eventRequest, vendor, locationsById, category, tagsById);
 
+        if (eventId != null) {
+            event.setId(eventId);
+        }
+
         event = eventRepository.save(event);
 
         return ResponseEntity.ok().body(eventMapper.eventToEventDetailResponse(event));
     }
-
 
     private int getPageNumber(Integer pageNumber) {
         return pageNumber == null || pageNumber < 0 ? DEFAULT_PAGE_NUMBER : pageNumber;
@@ -345,6 +361,5 @@ public class EventServiceImp implements EventService {
     private int getPageSize(Integer pageSize) {
         return pageSize == null || pageSize < 1 ? DEFAULT_PAGE_SIZE : pageSize;
     }
-
 
 }

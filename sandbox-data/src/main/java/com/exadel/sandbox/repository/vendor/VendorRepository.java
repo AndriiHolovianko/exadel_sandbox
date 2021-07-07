@@ -7,12 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
-
-import org.springframework.data.jpa.repository.Query;
-
-import java.util.Set;
-import org.springframework.data.jpa.repository.Query;
-
 import java.util.Set;
 
 public interface VendorRepository extends JpaRepository<Vendor, Long>, VendorRepositoryCustom {
@@ -22,7 +16,7 @@ public interface VendorRepository extends JpaRepository<Vendor, Long>, VendorRep
             "       v.name\n" +
             "FROM vendor v\n" +
             "       LEFT JOIN event e ON v.id = e.vendor_id\n" +
-            "GROUP BY v.id, v.name", nativeQuery = true)
+            "GROUP BY v.id, v.name", nativeQuery = true, countProjection = "0")
     Page<VendorProjection> findAllWithEventsCount(Pageable pageable);
 
     @Query(value = "SELECT *\n" +

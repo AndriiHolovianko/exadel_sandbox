@@ -44,7 +44,6 @@ public class EventMapper {
                 .dateBegin(eventRequest.getDateBegin())
                 .dateEnd(eventRequest.getDateEnd())
                 .dateOfCreation(LocalDateTime.now())
-                .email(eventRequest.getEmail())
                 .isOnline(eventRequest.isOnline())
                 .locations(locations)
                 .vendor(vendor)
@@ -125,14 +124,14 @@ public class EventMapper {
 
     public List<EventResponseFoOrders> eventToEventResponseFoOrder(List<Event> events) {
         return events.stream()
-        .map(event -> EventResponseFoOrders.builder()
-                .id(event.getId())
-                .gettingDate(event.getDateOfCreation())
-                .description(event.getDescription())
-                .vendorShortResponse(vendorShortMapper.vendorToVendorShortResponse(event.getVendor()))
-                .dateEnd(event.getDateEnd())
-                .locations(locMapper.setLocationToListShortLocation(event.getLocations()))
-                .build())
+                .map(event -> EventResponseFoOrders.builder()
+                        .id(event.getId())
+                        .gettingDate(event.getDateOfCreation())
+                        .description(event.getDescription())
+                        .vendorShortResponse(vendorShortMapper.vendorToVendorShortResponse(event.getVendor()))
+                        .dateEnd(event.getDateEnd())
+                        .locations(locMapper.setLocationToListShortLocation(event.getLocations()))
+                        .build())
                 .collect(Collectors.toList());
     }
 

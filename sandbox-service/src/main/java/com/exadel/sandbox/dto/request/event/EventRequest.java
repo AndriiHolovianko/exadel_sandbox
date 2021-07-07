@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.Email;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
@@ -20,9 +20,6 @@ public class EventRequest {
     private String description;
 
     private String fullDescription;
-
-    @Email(message = "email must have right format")
-    private String email;
 
     private boolean isOnline;
 
@@ -40,7 +37,8 @@ public class EventRequest {
     @NotNull(message = "The 'status' cannot be empty")
     private Status status;
 
+    @NotNull(message = "The 'vendorId' cannot be empty")
+    @Min(1)
     private Long vendorId;
-
 
 }
