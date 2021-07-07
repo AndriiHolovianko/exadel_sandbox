@@ -73,6 +73,30 @@ public class VendorRepositoryCustomImpl implements VendorRepositoryCustom {
                 .getResultList();
     }
 
+    @Override
+    public List<Vendor> findAllByLocationFilterIdFavorites(Long userId, Long id, boolean isCountry) {
+        String sqlWhere = "";
+
+        if (id == null) {
+            sqlWhere = "WHERE true ";
+        } else {
+            sqlWhere = (isCountry) ? "WHERE cn.id=? AND se.user_id=?" : "WHERE ct.id=? AND se.user_id=?";
+        }
+        sqlWhere = (isCountry) ? "WHERE cn.id=?" : "WHERE ct.id=?";
+
+        return entityManager.createNativeQuery(
+                "SELECT DISTINCT v.* FROM vendor v " +
+                        "INNER JOIN event e on v.id=e.vendor_id " +
+                        "INNER JOIN event_location el on e.id= el.event_id " +
+                        "INNER JOIN location l on el.location_id=l.id " +
+                        "INNER JOIN city ct on l.city_id=ct.id " +
+                        "INNER JOIN country cn on ct.country_id=cn.id " +
+                        sqlWhere + WHERE_EVENT_STATUS + " ORDER BY v.name ASC ",
+                Vendor.class)
+                .setParameter(1, id)
+                .getResultList();
+    }
+
     private String getWhereCondition(List<Long> ids) {
 
         if (ids.isEmpty() || ids.size() == 0) {

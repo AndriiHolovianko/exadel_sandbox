@@ -16,6 +16,8 @@ public interface VendorDetailsService {
 
     List<VendorFilterResponse>findAllVendorByLocationFilter(Long id, boolean isCountry);
 
+    List<VendorFilterResponse>findAllVendorByLocationFilterFavorites(Long userId, Long id, boolean isCountry);
+
     List<VendorFilterResponse>findAllVendorByCategoryFilter(List<Long> ids);
 
     List<VendorFilterResponse>findAllVendorFilter();

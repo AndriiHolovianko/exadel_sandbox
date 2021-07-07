@@ -53,6 +53,32 @@ public class CategoryRepositoryCustomImpl implements CategoryRepositoryCustom {
                 .getResultList();
     }
 
+    @Override
+    public List<Category> findAllByLocationFilterIdFavorites(Long userId, Long id, boolean isCountry) {
+
+        String sqlWhere = "";
+
+        if (id == null) {
+            sqlWhere = "WHERE true ";
+        } else {
+            sqlWhere = (isCountry) ? "WHERE cn.id=? and se.user_id=?" : "WHERE ct.id=? and se.user_id=?";
+        }
+
+        return entityManager.createNativeQuery(
+                "SELECT DISTINCT c.* FROM category c " +
+                        "INNER JOIN event e on c.id=e.category_id " +
+                        "INNER JOIN saved_event se on se.event_id=e.id "+
+                        "INNER JOIN event_location el on e.id= el.event_id " +
+                        "INNER JOIN location l on el.location_id=l.id " +
+                        "INNER JOIN city ct on l.city_id=ct.id " +
+                        "INNER JOIN country cn on ct.country_id=cn.id " +
+                        sqlWhere + WHERE_EVENT_STATUS +" ORDER BY c.name ASC ",
+                Category.class)
+                .setParameter(1, id)
+                .setParameter(2, userId)
+                .getResultList();
+    }
+
 
     @Override
     public List<Category> findAllByVendorFilterIds(List<Long> ids) {

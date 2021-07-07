@@ -10,5 +10,7 @@ public interface CategoryRepositoryCustom {
 
     List<Category> findAllByLocationFilterId(Long id, boolean isCountry);
 
+    List<Category> findAllByLocationFilterIdFavorites(Long userId, Long id, boolean isCountry);
+
     List<Category> findAllByVendorFilterIds(List<Long> ids);
 }

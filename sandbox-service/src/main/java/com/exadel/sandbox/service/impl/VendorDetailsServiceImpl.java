@@ -58,6 +58,13 @@ public class VendorDetailsServiceImpl implements VendorDetailsService {
     }
 
     @Override
+    public List<VendorFilterResponse> findAllVendorByLocationFilterFavorites(Long userId, Long id, boolean isCountry) {
+        return repository.findAllByLocationFilterIdFavorites(userId, id, isCountry).stream()
+                .map(vendorMapper::vendorToVendorFilterResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<VendorFilterResponse> findAllVendorByCategoryFilter(List<Long> ids) {
         return repository.findAllByCategoryFilterIds(ids).stream()
                 .map(vendorMapper::vendorToVendorFilterResponse)

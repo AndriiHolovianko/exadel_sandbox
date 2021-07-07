@@ -1,7 +1,6 @@
 package com.exadel.sandbox.service.filter.impl;
 
 import com.exadel.sandbox.dto.request.filter.FilterRequest;
-import com.exadel.sandbox.dto.response.category.CategoryShortResponse;
 import com.exadel.sandbox.dto.response.city.CityResponse;
 import com.exadel.sandbox.dto.response.filter.CategoryFilterResponse;
 import com.exadel.sandbox.dto.response.filter.FilterResponse;
@@ -17,7 +16,6 @@ import com.exadel.sandbox.service.CityService;
 import com.exadel.sandbox.service.LocationService;
 import com.exadel.sandbox.service.TagService;
 import com.exadel.sandbox.service.VendorDetailsService;
-import com.exadel.sandbox.service.filter.FilterService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -44,15 +42,15 @@ public class FilterServiceFoFavorites {
 
         switch (filterRequest.getMain()) {
             case "location":
-                return getFilterResponseMainLocation(filterRequest);
+                return getFilterResponseMainLocation(filterRequest, userId);
             case "categories":
                 return getFilterResponseMainCategories(filterRequest);
             default:
-                return getFilterResponseAll(filterRequest, userId);
+                return getFilterResponseAll(userId);
         }
     }
 
-    private FilterResponse getFilterResponseAll(FilterRequest filterRequest, Long userId) {
+    private FilterResponse getFilterResponseAll( Long userId) {
 
         CityResponse cityByUserId = cityService.findCityByUserId(userId);
 
@@ -75,15 +73,15 @@ public class FilterServiceFoFavorites {
         return new FilterResponse(allLocationFilter, allCategoriesFilter, allTagsFilter, allVendorsFilter);
     }
 
-    private FilterResponse getFilterResponseMainLocation(FilterRequest filterRequest) {
+    private FilterResponse getFilterResponseMainLocation(FilterRequest filterRequest, Long userId) {
 
         List<CategoryFilterResponse> allCategoriesByLocationFilter =
-                getAllCategiriesByLocationFilter(filterRequest.getLocationId(), filterRequest.getIsCountry());
+                getAllCategiriesByLocationFilterFavorites(userId, filterRequest.getLocationId(), filterRequest.getIsCountry());
 
         List<TagFilterResponse> allTagsByCategoryFilter = Collections.emptyList();
 
         List<VendorFilterResponse> allVendorsByLocationFilter =
-                getAllVendorsByLocationFilter(filterRequest.getLocationId(), filterRequest.getIsCountry());
+                getAllVendorsByLocationFilterFavorites(userId, filterRequest.getLocationId(), filterRequest.getIsCountry());
 
         return new FilterResponse(null, allCategoriesByLocationFilter, allTagsByCategoryFilter, allVendorsByLocationFilter);
     }
@@ -105,11 +103,12 @@ public class FilterServiceFoFavorites {
         }
     }
 
-    private List<CategoryFilterResponse> getAllCategiriesByLocationFilter(long locationId, boolean isCountry) {
-        return categoryService.findAllCategoryByLocationFilter(locationId, isCountry);
+
+    private List<CategoryFilterResponse> getAllCategiriesByLocationFilterFavorites(long userId,long locationId, boolean isCountry) {
+        return categoryService.findAllCategoryByLocationFilterFavorites(userId, locationId, isCountry);
     }
 
-    private List<VendorFilterResponse> getAllVendorsByLocationFilter(long locationId, boolean isCountry) {
-        return vendorService.findAllVendorByLocationFilter(locationId, isCountry);
+    private List<VendorFilterResponse> getAllVendorsByLocationFilterFavorites(long userId, long locationId, boolean isCountry) {
+        return vendorService.findAllVendorByLocationFilterFavorites(userId, locationId, isCountry);
     }
 }

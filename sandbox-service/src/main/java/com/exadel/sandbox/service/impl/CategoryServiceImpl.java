@@ -189,6 +189,13 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    public List<CategoryFilterResponse> findAllCategoryByLocationFilterFavorites(Long userId, Long id, boolean isCountry) {
+        return categoryRepository.findAllByLocationFilterIdFavorites(userId, id, isCountry).stream()
+                .map(categoryMapper::categoryToCategoryFilterResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<CategoryFilterResponse> findAllCategoryByVendorFilter(List<Long> ids) {
         return categoryRepository.findAllByVendorFilterIds(ids).stream()
                 .map(categoryMapper::categoryToCategoryFilterResponse)
