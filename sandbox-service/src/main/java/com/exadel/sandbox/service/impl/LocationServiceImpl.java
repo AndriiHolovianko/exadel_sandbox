@@ -191,4 +191,9 @@ public class LocationServiceImpl implements LocationService {
                 .street(request.getStreet())
                 .city(city).build();
     }
+
+    @Override
+    public List<LocationFilterResponse> findAllLocationFilterFavorites(Long userId) {
+        return groupByCountry(locationRepository.getAllEventsLocationsFromSaved(userId));
+    }
 }
