@@ -81,11 +81,11 @@ public class VendorRepositoryCustomImpl implements VendorRepositoryCustom {
         } else {
             sqlWhere = (isCountry) ? "WHERE cn.id=? AND se.user_id=?" : "WHERE ct.id=? AND se.user_id=?";
         }
-        sqlWhere = (isCountry) ? "WHERE cn.id=?" : "WHERE ct.id=?";
 
         return entityManager.createNativeQuery(
                 "SELECT DISTINCT v.* FROM vendor v " +
                         "INNER JOIN event e on v.id=e.vendor_id " +
+                        "INNER JOIN saved_event se on se.event_id=e.id " +
                         "INNER JOIN event_location el on e.id= el.event_id " +
                         "INNER JOIN location l on el.location_id=l.id " +
                         "INNER JOIN city ct on l.city_id=ct.id " +
@@ -93,6 +93,7 @@ public class VendorRepositoryCustomImpl implements VendorRepositoryCustom {
                         sqlWhere + WHERE_EVENT_STATUS + " ORDER BY v.name ASC ",
                 Vendor.class)
                 .setParameter(1, id)
+                .setParameter(2, userId)
                 .getResultList();
     }
 

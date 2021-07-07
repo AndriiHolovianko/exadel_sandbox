@@ -50,7 +50,7 @@ public class FilterServiceFoFavorites {
         }
     }
 
-    private FilterResponse getFilterResponseAll( Long userId) {
+    private FilterResponse getFilterResponseAll(Long userId) {
 
         CityResponse cityByUserId = cityService.findCityByUserId(userId);
 
@@ -104,7 +104,7 @@ public class FilterServiceFoFavorites {
     }
 
 
-    private List<CategoryFilterResponse> getAllCategiriesByLocationFilterFavorites(long userId,long locationId, boolean isCountry) {
+    private List<CategoryFilterResponse> getAllCategiriesByLocationFilterFavorites(long userId, long locationId, boolean isCountry) {
         return categoryService.findAllCategoryByLocationFilterFavorites(userId, locationId, isCountry);
     }
 
