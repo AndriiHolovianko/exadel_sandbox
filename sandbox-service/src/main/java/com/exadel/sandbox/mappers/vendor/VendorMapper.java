@@ -37,7 +37,11 @@ public class VendorMapper {
 
     public VendorDetailsResponse vendorToVendorDetailsResponse(Vendor vendor) {
         return VendorDetailsResponse.builder()
-                .vendorResponse(vendorToVendorResponse(vendor))
+                .id(vendor.getId())
+                .name(vendor.getName())
+                .description(vendor.getDescription())
+                .email(vendor.getEmail())
+                .phoneNumber(vendor.getPhoneNumber())
                 .locationResponses(locationMapper.setLocationToSetLocationResponse(vendor.getLocations()))
                 .build();
     }

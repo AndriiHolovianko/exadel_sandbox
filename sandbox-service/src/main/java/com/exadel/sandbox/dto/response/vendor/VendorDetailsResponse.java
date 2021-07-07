@@ -14,7 +14,15 @@ import java.util.Set;
 @Builder
 public class VendorDetailsResponse {
 
-    private VendorResponse vendorResponse;
+    private Long id;
+
+    private String name;
+
+    private String description;
+
+    private String phoneNumber;
+
+    private String email;
 
     private Set<LocationResponse> locationResponses;
 

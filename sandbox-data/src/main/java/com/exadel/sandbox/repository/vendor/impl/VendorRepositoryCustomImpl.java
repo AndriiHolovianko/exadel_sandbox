@@ -44,7 +44,6 @@ public class VendorRepositoryCustomImpl implements VendorRepositoryCustom {
         } else {
             sqlWhere = (isCountry) ? "WHERE cn.id=?" : "WHERE ct.id=?";
         }
-        sqlWhere = (isCountry) ? "WHERE cn.id=?" : "WHERE ct.id=?";
 
         return entityManager.createNativeQuery(
                 "SELECT DISTINCT v.* FROM vendor v " +

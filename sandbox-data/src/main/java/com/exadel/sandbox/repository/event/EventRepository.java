@@ -10,8 +10,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import javax.transaction.Transactional;
-import java.math.BigInteger;
 import java.util.Set;
 
 @Repository
@@ -19,8 +17,9 @@ public interface EventRepository extends JpaRepository<Event, Long>, EventReposi
 
     @Query("select distinct e from Event e " +
             "join e.locations loc " +
-            "where loc.city.id = ?1")
-    Page<Event> findEventByCityId(Long cityId, Pageable pageable);
+            "where loc.city.id = ?1 " +
+            "and e.status = ?2")
+    Page<Event> findEventByCityIdAndStatus(Long cityId, Status status, Pageable pageable);
 
     @Query("select distinct e from Event e " +
             "join e.locations loc " +
