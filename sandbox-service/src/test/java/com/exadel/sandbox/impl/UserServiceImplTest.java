@@ -1,12 +1,18 @@
 package com.exadel.sandbox.impl;
 
-import com.exadel.sandbox.repository.event.EventRepository;
+import com.exadel.sandbox.dto.response.user.UserResponse;
+import com.exadel.sandbox.mappers.user.UserMapper;
+import com.exadel.sandbox.model.user.Role;
 import com.exadel.sandbox.service.impl.UserServiceImpl;
+import org.hamcrest.CoreMatchers;
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+
+import java.util.Collections;
+
 
 @SpringBootTest
 class UserServiceImplTest {
@@ -15,10 +21,7 @@ class UserServiceImplTest {
     private UserServiceImpl userService;
 
     @MockBean
-    private EventRepository eventRepository;
-
-    @MockBean
-    private ModelMapper mapper;
+    private UserMapper userMapper;
 
     @Test
     void findAll() {
@@ -26,29 +29,8 @@ class UserServiceImplTest {
 
     @Test
     void findByName() {
-    }
-
-    @Test
-    void saveEventToOrder() {
-    }
-
-    @Test
-    void saveEventToSaved() {
-    }
-
-    @Test
-    void removeEventFromOrder() {
-    }
-
-    @Test
-    void removeEventFromSaved() {
-    }
-
-    @Test
-    void getAllFromOrder() {
-    }
-
-    @Test
-    void getAllFromSaved() {
+        UserResponse user = userService.findByName("boris@gmail.com");
+        Assert.assertTrue(CoreMatchers.is(user.getRole()).matches(Collections.singleton(Role.MODERATOR)));
+        Assert.assertEquals(user.getFirstName(),"Boris");
     }
 }
